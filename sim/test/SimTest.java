@@ -3,7 +3,9 @@ package sim.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -17,6 +19,10 @@ import sim.util.Bag;
 import sim.util.Int2D;
 
 public class SimTest {
+
+	/////////////////////////
+	/// Integration tests ///
+	/////////////////////////
 
 	/**
 	 * Initialise two custom SimState objects with the same random seed.
@@ -230,9 +236,69 @@ public class SimTest {
 			}
 		}
 	}
+
+	////////////////////
+	/// System tests ///
+	////////////////////
+
     /**
-     * TODO: System-level test
+     * System-level test
      */
+    @Test
+	public void simState_testRunFromCommandLine() {
+		try {
+			Runtime rt = Runtime.getRuntime();
+
+			/**
+			 * Compile TestState and show command line output
+ 			 */
+			Process compile = rt.exec("javac -cp jar/mason.19.jar:. sim/test/TestState.java sim/test/TestAgent.java");
+			BufferedReader stdCompileInput = new BufferedReader(new
+					InputStreamReader(compile.getInputStream()));
+
+			BufferedReader stdCompileError = new BufferedReader(new
+					InputStreamReader(compile.getErrorStream()));
+
+			// read the output from the command
+			System.out.println("Here is the standard output of the compile command:\n");
+			String s = null;
+			while ((s = stdCompileInput.readLine()) != null) {
+				System.out.println(s);
+			}
+
+			// read any errors from the attempted command
+			System.out.println("Here is the standard error of the compile command (if any):\n");
+			while ((s = stdCompileError.readLine()) != null) {
+				System.out.println(s);
+			}
+
+			/**
+			 * Run TestState and show command line output
+			 */
+			Process run = rt.exec("java sim.test.TestState -seed 4 -for 1000 -time 1");
+			BufferedReader stdRunInput = new BufferedReader(new
+					InputStreamReader(run.getInputStream()));
+
+			BufferedReader stdRunError = new BufferedReader(new
+					InputStreamReader(run.getErrorStream()));
+
+			// read the output from the command
+			System.out.println("Here is the standard output of the run command:\n");
+			s = null;
+			while ((s = stdRunInput.readLine()) != null) {
+				System.out.println(s);
+			}
+
+			// read any errors from the attempted command
+			System.out.println("Here is the standard error of the run command (if any):\n");
+			while ((s = stdRunError.readLine()) != null) {
+				System.out.println(s);
+			}
+		} catch(Exception e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
+		}
+	}
 
     /**
      * BUG:
@@ -243,6 +309,10 @@ public class SimTest {
 	    String[] args = {"-for", "2000", "-time", "1"};
 	    SimState.doLoop(TestState.class, args);
     }
+
+    //////////////////
+    /// Unit tests ///
+	//////////////////
 
     /**
      * SparseGrid2D.setObjectLocation(null, _, _) should return false.

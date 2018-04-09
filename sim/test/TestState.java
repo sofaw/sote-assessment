@@ -26,4 +26,8 @@ public class TestState extends SimState implements Serializable {
 		schedule.scheduleRepeating(t);
 	}
 
+	public static void main(String[] args) {
+		doLoop(TestState.class, args);
+	}
+
 }
