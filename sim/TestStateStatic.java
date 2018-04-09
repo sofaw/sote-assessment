@@ -1,17 +1,17 @@
-package sim.test;
-
-import java.io.Serializable;
+package sim;
 
 import sim.engine.SimState;
 import sim.field.grid.SparseGrid2D;
 
-public class TestState extends SimState implements Serializable {
+import java.io.Serializable;
+
+public class TestStateStatic extends SimState implements Serializable {
 	private static final long serialVersionUID = 1L; // For checkpointing (see
 														// p49)
 
-	public SparseGrid2D grid = new SparseGrid2D(100, 100);
+	public static SparseGrid2D grid = new SparseGrid2D(100, 100);
 
-	public TestState(long seed) {
+	public TestStateStatic(long seed) {
 		super(seed);
 	}
 
@@ -20,14 +20,10 @@ public class TestState extends SimState implements Serializable {
 
 		grid.clear();
 
-		TestAgent t = new TestAgent();
+		TestAgentStatic t = new TestAgentStatic();
 		grid.setObjectLocation(t, 50, 50);
 
 		schedule.scheduleRepeating(t);
-	}
-
-	public static void main(String[] args) {
-		doLoop(TestState.class, args);
 	}
 
 }

@@ -1,4 +1,4 @@
-package sim.test;
+package sim;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -12,10 +12,6 @@ import java.util.concurrent.*;
 
 import org.junit.Test;
 
-import sim.engine.SimState;
-import sim.field.grid.IntGrid2D;
-import sim.field.grid.SparseGrid2D;
-import sim.util.Bag;
 import sim.util.Int2D;
 
 public class SimTest {
@@ -220,7 +216,7 @@ public class SimTest {
 			/**
 			 * Compile TestState and show command line output
  			 */
-			Process compile = rt.exec("javac -cp jar/mason.19.jar:. sim/test/TestState.java sim/test/TestAgent.java");
+			Process compile = rt.exec("javac -cp jar/mason.19.jar:. sim/TestState.java sim/TestAgent.java");
 			BufferedReader stdCompileInput = new BufferedReader(new
 					InputStreamReader(compile.getInputStream()));
 
@@ -243,7 +239,7 @@ public class SimTest {
 			/**
 			 * Run TestState and show command line output
 			 */
-			Process run = rt.exec("java sim.test.TestState -seed 4 -for 1000 -time 1");
+			Process run = rt.exec("java sim.TestState -seed 4 -for 1000 -time 1");
 			BufferedReader stdRunInput = new BufferedReader(new
 					InputStreamReader(run.getInputStream()));
 
