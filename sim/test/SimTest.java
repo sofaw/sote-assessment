@@ -25,6 +25,7 @@ public class SimTest {
 	/////////////////////////
 
 	/**
+	 * TEST CASE 1
 	 * Initialise two custom SimState objects with the same random seed.
 	 * Run them both and assert that the state is the same.
 	 */
@@ -51,6 +52,7 @@ public class SimTest {
 	}
 	
 	/**
+	 * TEST CASE 2
 	 * Run a simulation and checkpoint it.
 	 * Reload simulation and check results are the same.
 	 */
@@ -93,7 +95,8 @@ public class SimTest {
 	}
 
     /**
-     * Code smell
+     * TEST CASE 3
+	 * Model independence
      */
 	@Test
     public void simState_stepOnOtherModel() {
@@ -113,43 +116,6 @@ public class SimTest {
 		System.out.println(l1);
 		System.out.println(l2);
     }
-
-    /**
-     * Encapsulation test (w. static member)
-     */
-    @Test
-	public void simStateStatic_testEncapsulation() throws ExecutionException, InterruptedException {
-		ExecutorService es = Executors.newFixedThreadPool(2);
-
-		final ArrayList<Callable<String>> tasks = new ArrayList<>();
-		tasks.add(new Callable<String>() {
-			@Override
-			public String call() throws Exception {
-				TestStateStatic t1 = new TestStateStatic(4);
-				t1.start();
-				TestAgentStatic a1 = (TestAgentStatic) t1.grid.getAllObjects().get(0);
-				t1.schedule.step(t1);
-				return t1.grid.getObjectLocation(a1).toString();
-			}
-		});
-		tasks.add(new Callable<String>() {
-			@Override
-			public String call() throws Exception {
-				TestStateStatic t2 = new TestStateStatic(6);
-				t2.start();
-				TestAgentStatic a2 = (TestAgentStatic) t2.grid.getAllObjects().get(0);
-				t2.schedule.step(t2);
-				return t2.grid.getObjectLocation(a2).toString();
-			}
-		});
-
-		final List<Future<String>> futures = es.invokeAll(tasks);
-		for (Future<String> future : futures)
-		{
-			final String resultOfTask = future.get();
-			System.out.println(resultOfTask);
-		}
-	}
 
 	private class State {
     	int id;
@@ -175,6 +141,7 @@ public class SimTest {
 	}
 
 	/**
+	 * TEST CASE 4
 	 * Encapsualtion test
 	 */
 	@Test
@@ -242,6 +209,7 @@ public class SimTest {
 	////////////////////
 
     /**
+	 * TEST CASE 5
      * System-level test
      */
     @Test
@@ -300,70 +268,60 @@ public class SimTest {
 		}
 	}
 
-    /**
-     * BUG:
-     * Nothing is printed to the console but specification states that info. should be printed every step.
-     */
-    @Test
-    public void simState_testTimeCommandLineArg() {
-	    String[] args = {"-for", "2000", "-time", "1"};
-	    SimState.doLoop(TestState.class, args);
-    }
-
     //////////////////
     /// Unit tests ///
 	//////////////////
 
-    /**
-     * SparseGrid2D.setObjectLocation(null, _, _) should return false.
-     */
-    @Test
-    public void sparseField_testStoreNullObject() {
-        SparseGrid2D s = new SparseGrid2D(100, 100);
-        assertEquals(false, s.setObjectLocation(null, 1, 1));
-    }
-
-    /**
-     * SparseGrid2D.setObjectLocation(_, null) should return false.
-     */
-    @Test
-    public void sparseField_testStoreNullLocation() {
-        SparseGrid2D s = new SparseGrid2D(100, 100);
-        assertEquals(false, s.setObjectLocation(new TestAgent(), null));
-    }
-
-    /**
-     * Remove objects from invalid location returns null.
-     */
-    @Test
-    public void sparseField_testRemoveObjectsInvalidLocation() {
-       SparseGrid2D s = new SparseGrid2D(100, 100);
-       assertEquals(null, s.removeObjectsAtLocation(101,101));
-    }
-
-    /**
-     * Known issue:
-     * Should not be able to modify bag of all objects in grid.
-     */
-    @Test
-    public void sparseField_modifyGetAllObjects() {
-        SparseGrid2D s = new SparseGrid2D(100, 100);
-        for(int i = 0; i < 10; i++) {
-            s.setObjectLocation(new TestAgent(), 1, 1);
-        }
-        Bag allObjs = s.getAllObjects();
-        allObjs.remove(0);
-        assertEquals(10, s.getAllObjects().size());
-    }
-
-    @Test
-    public void intGrid_initWithNegativeSizes() {
-        IntGrid2D ig = new IntGrid2D(-100, -100);
-    }
-
-    @Test
-    public void intGrid_initWithZeroSize() {
-        IntGrid2D ig = new IntGrid2D(-0, -0);
-        ig.set(0, 0, 21);
-    }
+//    /**
+//     * SparseGrid2D.setObjectLocation(null, _, _) should return false.
+//     */
+//    @Test
+//    public void sparseField_testStoreNullObject() {
+//        SparseGrid2D s = new SparseGrid2D(100, 100);
+//        assertEquals(false, s.setObjectLocation(null, 1, 1));
+//    }
+//
+//    /**
+//     * SparseGrid2D.setObjectLocation(_, null) should return false.
+//     */
+//    @Test
+//    public void sparseField_testStoreNullLocation() {
+//        SparseGrid2D s = new SparseGrid2D(100, 100);
+//        assertEquals(false, s.setObjectLocation(new TestAgent(), null));
+//    }
+//
+//    /**
+//     * Remove objects from invalid location returns null.
+//     */
+//    @Test
+//    public void sparseField_testRemoveObjectsInvalidLocation() {
+//       SparseGrid2D s = new SparseGrid2D(100, 100);
+//       assertEquals(null, s.removeObjectsAtLocation(101,101));
+//    }
+//
+//    /**
+//     * Known issue:
+//     * Should not be able to modify bag of all objects in grid.
+//     */
+//    @Test
+//    public void sparseField_modifyGetAllObjects() {
+//        SparseGrid2D s = new SparseGrid2D(100, 100);
+//        for(int i = 0; i < 10; i++) {
+//            s.setObjectLocation(new TestAgent(), 1, 1);
+//        }
+//        Bag allObjs = s.getAllObjects();
+//        allObjs.remove(0);
+//        assertEquals(10, s.getAllObjects().size());
+//    }
+//
+//    @Test
+//    public void intGrid_initWithNegativeSizes() {
+//        IntGrid2D ig = new IntGrid2D(-100, -100);
+//    }
+//
+//    @Test
+//    public void intGrid_initWithZeroSize() {
+//        IntGrid2D ig = new IntGrid2D(-0, -0);
+//        ig.set(0, 0, 21);
+//    }
 }
