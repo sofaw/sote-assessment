@@ -12,7 +12,12 @@ import java.util.concurrent.*;
 
 import org.junit.Test;
 
+import org.junit.rules.ExpectedException;
+import sim.field.grid.Grid2D;
+import sim.field.grid.IntGrid2D;
+import sim.field.grid.SparseGrid2D;
 import sim.util.Int2D;
+import sim.util.IntBag;
 
 public class SimTest {
 
@@ -268,6 +273,33 @@ public class SimTest {
     /// Unit tests ///
 	//////////////////
 
+	/**
+	 * TEST CASE 6
+	 * Test that neighbouring methods work for unbounded grids and negative locations
+	 */
+	@Test
+	public void sparseGrid_getNegativeLocationsUnboundedGrid() {
+		SparseGrid2D sg = new SparseGrid2D(100, 100);
+		IntBag xs = new IntBag();
+		IntBag ys = new IntBag();
+		sg.getMooreLocations(-1, -1, 0, Grid2D.UNBOUNDED, true, xs, ys);
+		int[] xsArr = xs.toArray();
+		int[] ysArr = ys.toArray();
+		assertEquals(1, xsArr.length);
+		assertEquals(1, ysArr.length);
+		assertEquals(-1, xsArr[0]);
+		assertEquals(-1, ysArr[0]);
+	}
+
+	/**
+	 * TEST CASE 7
+	 * Test that SparseGrid2D cannot be initialised with negative width/height
+	 */
+	@Test(expected = Exception.class)
+	public void sparseGrid_initWithNegativeWidth() {
+		SparseGrid2D sg = new SparseGrid2D(-100, -100);
+	}
+
 //    /**
 //     * SparseGrid2D.setObjectLocation(null, _, _) should return false.
 //     */
@@ -310,10 +342,6 @@ public class SimTest {
 //        assertEquals(10, s.getAllObjects().size());
 //    }
 //
-//    @Test
-//    public void intGrid_initWithNegativeSizes() {
-//        IntGrid2D ig = new IntGrid2D(-100, -100);
-//    }
 //
 //    @Test
 //    public void intGrid_initWithZeroSize() {
